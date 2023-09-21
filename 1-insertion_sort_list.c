@@ -32,7 +32,7 @@ void insertion_sort_list(listint_t **list)
 	listint_t *i = *list;
 	listint_t *tail, *head;
 
-	if (!list || !*list || !(*list)->next)
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
 		return;
 	while (i)
 	{
