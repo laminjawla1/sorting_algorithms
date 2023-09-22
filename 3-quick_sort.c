@@ -20,26 +20,35 @@ void swap(int *a, int *b)
  *@array: The array
  *@low: Lower bound
  *@high: Higher bound
+ *@size: Size of the list
  *
  *Return: Index of the partition
 */
-int partition(int *array, int low, int high)
+int partition(int *array, int low, int high, size_t size)
 {
-	int i = low - 1, j, pivot;
+	int *pivot, i, j;
 
-	pivot = array[high];
-	for (j = low; j < high; j++)
+	pivot = array + high;
+	i = j = low;
+	while (j < high)
 	{
-		if (array[j] < pivot)
+		if (array[j] < *pivot)
 		{
+			if (i < j)
+			{
+				swap(array + j, array + i);
+				print_array(array, size);
+			}
 			i++;
-			swap(array + i, array + j);
-			print_array(array, high + 1);
 		}
+		j++;
 	}
-	swap(array + i + 1, array + high);
-	print_array(array, high + 1);
-	return (i + 1);
+	if (array[i] > *pivot)
+	{
+		swap(array + i, pivot);
+		print_array(array, size);
+	}
+	return (i);
 }
 /**
 * quick_sort_main - A helper function for our quick_sort
@@ -48,16 +57,17 @@ int partition(int *array, int low, int high)
 * @array: The array to be sorted
 * @low: Lower bound
 * @high: Higher bound
+* @size: Size of the array
 */
-void quick_sort_main(int *array, int low, int high)
+void quick_sort_main(int *array, int low, int high, size_t size)
 {
 	int part;
 
-	if (low < high)
+	if (high - low > 0)
 	{
-		part = partition(array, low, high);
-		quick_sort_main(array, low, part - 1);
-		quick_sort_main(array, part + 1, high);
+		part = partition(array, low, high, size);
+		quick_sort_main(array, low, part - 1, size);
+		quick_sort_main(array, part + 1, high, size);
 	}
 }
 /**
@@ -71,5 +81,5 @@ void quick_sort(int *array, size_t size)
 {
 	if (!array || size < 2)
 		return;
-	quick_sort_main(array, 0, size - 1);
+	quick_sort_main(array, 0, size - 1, size);
 }
